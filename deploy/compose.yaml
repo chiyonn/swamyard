@@ -9,7 +9,6 @@ services:
     command: ["air", "-c", ".air.toml"]
     volumes:
       - ../:/app
-      - ../apps/executor/.air.toml:/app/.air.toml
     working_dir: /app/apps/executor
 
   aggregator:
@@ -21,7 +20,6 @@ services:
     command: ["air", "-c", ".air.toml"]
     volumes:
       - ../:/app
-      - ../apps/aggregator/.air.toml:/app/.air.toml
     working_dir: /app/apps/aggregator
 
   bot-sma:
@@ -34,7 +32,6 @@ services:
     command: ["air", "-c", ".air.toml"]
     volumes:
       - ../:/app
-      - ../apps/bot-sma/.air.toml:/app/.air.toml
     working_dir: /app/apps/bot-sma
 
   dashboard:
