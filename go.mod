@@ -3,6 +3,7 @@ module swarmyard
 go 1.23
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1
 	google.golang.org/grpc v1.72.2
 	google.golang.org/protobuf v1.36.6
 )

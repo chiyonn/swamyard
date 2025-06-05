@@ -1,7 +1,16 @@
 package main
 
-import "log"
+import (
+	"github.com/chiyonn/swarmyard/pkg/config"
+	"github.com/chiyonn/swarmyard/pkg/logger"
+)
 
 func main() {
-	log.Println("Executor service starting...")
+	_, err := config.Load()
+	if err != nil {
+		panic(err)
+	}
+
+	logger.InitLogger()
+	logger.Info("Executor service starting...")
 }
