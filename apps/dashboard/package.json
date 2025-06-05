@@ -1,0 +1,9 @@
+{
+  "name": "dashboard",
+  "version": "0.0.1",
+  "scripts": {
+    "lint": "echo 'no lint yet'",
+    "type-check": "echo 'no type check yet'",
+    "build": "echo 'build placeholder'"
+  }
+}

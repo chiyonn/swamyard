@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package tradeexecutor;
+option go_package = "github.com/example/swarmyard/api/proto/tradeexecutor";
+
+service TradeExecutor {
+  rpc PlaceOrder (OrderRequest) returns (OrderResponse);
+  rpc PauseBot (BotRequest) returns (BotResponse);
+  rpc ResumeBot (BotRequest) returns (BotResponse);
+}
+
+message OrderRequest {
+  string bot_id = 1;
+  string pair = 2;
+  double amount = 3;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  string status = 2;
+}
+
+message BotRequest {
+  string bot_id = 1;
+}
+
+message BotResponse {
+  string status = 1;
+}
