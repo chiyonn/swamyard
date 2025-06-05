@@ -6,6 +6,11 @@ services:
     env_file:
       - .env.global
       - .env.executor
+    command: ["air", "-c", ".air.toml"]
+    volumes:
+      - ../:/app
+      - ../apps/executor/.air.toml:/app/.air.toml
+    working_dir: /app/apps/executor
 
   aggregator:
     build:
@@ -13,6 +18,11 @@ services:
       dockerfile: apps/aggregator/Dockerfile
     env_file:
       - .env.global
+    command: ["air", "-c", ".air.toml"]
+    volumes:
+      - ../:/app
+      - ../apps/aggregator/.air.toml:/app/.air.toml
+    working_dir: /app/apps/aggregator
 
   bot-sma:
     build:
@@ -21,9 +31,17 @@ services:
     env_file:
       - .env.global
       - .env.bot-sma
+    command: ["air", "-c", ".air.toml"]
+    volumes:
+      - ../:/app
+      - ../apps/bot-sma/.air.toml:/app/.air.toml
+    working_dir: /app/apps/bot-sma
 
   dashboard:
     build:
       context: ../
       dockerfile: apps/dashboard/Dockerfile
-
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ../:/app
+    working_dir: /app/apps/dashboard
