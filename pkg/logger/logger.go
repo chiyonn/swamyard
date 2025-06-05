@@ -22,3 +22,10 @@ func Info(msg string, args ...interface{}) {
 func Error(msg string, args ...interface{}) {
 	log.Error(fmt.Sprintf(msg, args...))
 }
+
+// Fatal logs a fatal error and exits the application.
+func Fatal(msg string, args ...interface{}) {
+	log.Error(fmt.Sprintf(msg, args...)) // or log.Log(...) with LevelFatal if supported
+	os.Exit(1)
+}
+

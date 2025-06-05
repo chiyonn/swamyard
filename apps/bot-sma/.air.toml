@@ -38,6 +38,7 @@ tmp_dir = "tmp"
   main_only = false
   silent = false
   time = false
+  startup = false
 
 [misc]
   clean_on_exit = false
