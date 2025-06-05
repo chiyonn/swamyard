@@ -31,3 +31,16 @@ In the end, it's all about the joy of watching little bots do stuff while number
 - Add more bots (depends on my mood)
 - Spice up the dashboard with fancy graphs (eventually)
 - Grow a heart strong enough to handle real-mode losses (WIP)
+
+## 📂 Project Structure
+
+See `AGENTS.md` for full guidelines. This repository follows a microservice layout:
+
+```
+apps/           # Go services and frontend dashboard
+api/proto/      # gRPC definitions
+pkg/            # Shared Go packages
+deploy/         # Docker Compose setup
+```
+
+Run `docker compose -f deploy/compose.yaml up` to start all services in development mode.

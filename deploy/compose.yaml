@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  executor:
+    build: ../apps/executor
+  aggregator:
+    build: ../apps/aggregator
+  bot-sma:
+    build: ../apps/bot-sma
+  dashboard:
+    build: ../apps/dashboard
