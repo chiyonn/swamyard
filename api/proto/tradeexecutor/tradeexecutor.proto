@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package tradeexecutor;
-option go_package = "github.com/example/swarmyard/api/proto/tradeexecutor";
+option go_package = "github.com/chiyonn/swarmyard/api/proto/tradeexecutor";
 
 service TradeExecutor {
   rpc PlaceOrder (OrderRequest) returns (OrderResponse);

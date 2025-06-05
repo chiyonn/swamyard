@@ -372,7 +372,7 @@ const file_api_proto_tradeexecutor_tradeexecutor_proto_rawDesc = "" +
 	"\n" +
 	"PlaceOrder\x12\x1b.tradeexecutor.OrderRequest\x1a\x1c.tradeexecutor.OrderResponse\x12A\n" +
 	"\bPauseBot\x12\x19.tradeexecutor.BotRequest\x1a\x1a.tradeexecutor.BotResponse\x12B\n" +
-	"\tResumeBot\x12\x19.tradeexecutor.BotRequest\x1a\x1a.tradeexecutor.BotResponseB6Z4github.com/example/swarmyard/api/proto/tradeexecutorb\x06proto3"
+	"\tResumeBot\x12\x19.tradeexecutor.BotRequest\x1a\x1a.tradeexecutor.BotResponseB6Z4github.com/chiyonn/swarmyard/api/proto/tradeexecutorb\x06proto3"
 
 var (
 	file_api_proto_tradeexecutor_tradeexecutor_proto_rawDescOnce sync.Once
