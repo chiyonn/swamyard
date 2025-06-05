@@ -2,9 +2,17 @@ version: '3.9'
 services:
   executor:
     build: ../apps/executor
+    env_file:
+      - .env.global
+      - .env.executor
   aggregator:
     build: ../apps/aggregator
+    env_file:
+      - .env.global
   bot-sma:
     build: ../apps/bot-sma
+    env_file:
+      - .env.global
+      - .env.bot-sma
   dashboard:
     build: ../apps/dashboard
