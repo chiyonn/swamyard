@@ -9,18 +9,50 @@ It explains the project layout, conventions, and collaboration standards inspire
 
 ```
 swarmyard/
-├── apps/
-│   ├── executor/             # gRPC TradeExecutor service (Go)
-│   ├── bot-sma/              # Example strategy Bot (Go)
-│   ├── aggregator/           # KPI aggregation service (Go)
-│   └── dashboard/            # React (Vite) frontend (TypeScript)
 ├── api/
 │   └── proto/
-│       └── tradeexecutor/    # gRPC .proto files and generated Go code
-├── pkg/                      # Shared Go packages (config, logger, model)
-├── deploy/                   # Docker Compose setup, environment files
-├── go.mod / go.sum           # Go module dependencies
-└── README.md
+│       └── tradeexecutor/
+│           ├── trade_executor.proto
+│           ├── tradeexecutor.pb.go
+│           └── tradeexecutor_grpc.pb.go
+├── apps/
+│   ├── bot-sma/
+│   │   ├── main.go
+│   │   └── Dockerfile
+│   ├── executor/
+│   │   ├── main.go
+│   │   └── Dockerfile
+│   ├── aggregator/
+│   │   ├── main.go
+│   │   └── Dockerfile
+│   └── dashboard/
+│       ├── package.json
+│       ├── vite.config.ts
+│       └── src/
+│           ├── main.tsx
+│           ├── components/
+│           └── pages/
+├── pkg/
+│   ├── botcore/               # Botの共通ランタイム (run loop, state)
+│   │   ├── runner.go
+│   │   └── types.go
+│   ├── strategy/              # 戦略ごとのビジネスロジック
+│   │   ├── sma.go
+│   │   ├── rsi.go
+│   │   └── bollinger.go
+│   ├── config/                # 設定読み込み共通処理
+│   │   └── config.go
+│   ├── logger/                # ログラッパー
+│   │   └── logger.go
+│   └── model/                 # 共通構造体
+│       └── model.go
+├── deploy/
+│   ├── docker-compose.yml
+│   └── .env
+├── go.mod
+├── go.sum
+├── README.md
+└── PROJECT_GUIDE.md
 ```
 
 ---

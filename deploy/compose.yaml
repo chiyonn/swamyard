@@ -1,18 +1,29 @@
-version: '3.9'
 services:
   executor:
-    build: ../apps/executor
+    build:
+      context: ../
+      dockerfile: apps/executor/Dockerfile
     env_file:
       - .env.global
       - .env.executor
+
   aggregator:
-    build: ../apps/aggregator
+    build:
+      context: ../
+      dockerfile: apps/aggregator/Dockerfile
     env_file:
       - .env.global
+
   bot-sma:
-    build: ../apps/bot-sma
+    build:
+      context: ../
+      dockerfile: apps/bot-sma/Dockerfile
     env_file:
       - .env.global
       - .env.bot-sma
+
   dashboard:
-    build: ../apps/dashboard
+    build:
+      context: ../
+      dockerfile: apps/dashboard/Dockerfile
+
