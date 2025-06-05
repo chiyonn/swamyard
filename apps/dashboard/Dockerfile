@@ -1,6 +1,11 @@
-FROM node:20-alpine
+FROM node:22-alpine
+
 WORKDIR /app
-COPY ./apps/dashboard .
-RUN npm install
-RUN npm run build
-CMD ["npm", "run", "build"]
+
+COPY apps/dashboard/package.json apps/dashboard/yarn.lock ./
+
+RUN yarn install
+
+COPY apps/dashboard .
+
+EXPOSE 5173

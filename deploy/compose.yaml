@@ -41,7 +41,9 @@ services:
     build:
       context: ../
       dockerfile: apps/dashboard/Dockerfile
-    command: ["npm", "run", "dev"]
+    command: ["yarn", "dev"]
+    ports:
+      - "3000:5173"
     volumes:
       - ../:/app
     working_dir: /app/apps/dashboard
