@@ -26,14 +26,12 @@ func (s *PriceFeedServer) SubscribePrices(req *pb.PriceRequest, stream pb.PriceF
 	for {
 		select {
 		case <-ticker.C:
-			price := 25000 + rand.Float64()*5000
+			price := 140.00 + rand.Float64() // → 140.00〜140.99
 			snapshot := &pb.PriceSnapshot{
 				Pair:      pair,
 				Price:     price,
 				Timestamp: time.Now().Unix(),
 			}
-
-			logger.Info("Sending price snapshot: pair=%s price=%.2f ts=%d", snapshot.Pair, snapshot.Price, snapshot.Timestamp)
 
 			if err := stream.Send(snapshot); err != nil {
 				logger.Error("Failed to send snapshot: %v", err)

@@ -7,12 +7,15 @@ import (
 
 	pricefeedpb "github.com/chiyonn/swarmyard/api/proto/pricefeed"
 	pb "github.com/chiyonn/swarmyard/api/proto/tradeexecutor"
+	"github.com/chiyonn/swarmyard/pkg/botcore"
 	"github.com/chiyonn/swarmyard/pkg/config"
 	"github.com/chiyonn/swarmyard/pkg/logger"
+	"github.com/chiyonn/swarmyard/pkg/strategy"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+var lastAction string
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
@@ -33,17 +36,25 @@ func startPriceStream() {
 		return
 	}
 
+
 	for {
 		snapshot, err := stream.Recv()
 		if err != nil {
-			logger.Error("Failed to receive snapshot: %v", err)
+			logger.Error("Stream error: %v", err)
 			break
 		}
-		logger.Info("Received price: %.2f for %s at %d", snapshot.Price, snapshot.Pair, snapshot.Timestamp)
+
+		if snapshot.Price <= 140.20 && lastAction != "BUY" {
+			placeOrder(pb.Side_BUY, "USD/JPY", 1000.0)
+			lastAction = "BUY"
+		} else if snapshot.Price >= 140.80 && lastAction != "SELL" {
+			placeOrder(pb.Side_SELL, "USD/JPY", 1000.0)
+			lastAction = "SELL"
+		}
 	}
 }
 
-func placeOrder() {
+func placeOrder(side pb.Side, pair string, amount float64) {
 	conn, err := grpc.NewClient(
 		"executor:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -61,9 +72,9 @@ func placeOrder() {
 
 	req := &pb.OrderRequest{
 		BotId:  "bot-sma",
-		Pair:   "BTC/USDT",
-		Amount: 0.01,
-		Side:   pb.Side_BUY,
+		Pair:   pair,
+		Amount: amount,
+		Side:   side,
 	}
 
 	res, err := client.PlaceOrder(ctx, req)
@@ -87,8 +98,13 @@ func main() {
 	http.HandleFunc("/health", healthHandler)
 	go http.ListenAndServe(":8080", nil)
 
-	go startPriceStream()
-	go placeOrder()
+	sma := &strategy.SMAStrategy{}
+	bot := &botcore.Bot{
+		ID: "bot-sma",
+		Pair: "USD/JPY",
+		Strategy: sma,
+	}
+	go bot.Run()
 
 	select {}
 }
