@@ -4,13 +4,18 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"sync/atomic"
 	"time"
 
 	pb "github.com/chiyonn/swarmyard/api/proto/pricefeed"
 	"github.com/chiyonn/swarmyard/pkg/config"
 	"github.com/chiyonn/swarmyard/pkg/logger"
+
+	"github.com/gorilla/websocket"
 	"google.golang.org/grpc"
 )
+
+var latestPrice atomic.Value
 
 type PriceFeedServer struct {
 	pb.UnimplementedPriceFeedServer
@@ -33,6 +38,8 @@ func (s *PriceFeedServer) SubscribePrices(req *pb.PriceRequest, stream pb.PriceF
 				Timestamp: time.Now().Unix(),
 			}
 
+			latestPrice.Store(snapshot)
+
 			if err := stream.Send(snapshot); err != nil {
 				logger.Error("Failed to send snapshot: %v", err)
 				return err
@@ -49,6 +56,32 @@ func (s *PriceFeedServer) SubscribePrices(req *pb.PriceRequest, stream pb.PriceF
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+}
+
+func streamHandler(w http.ResponseWriter, r *http.Request) {
+	upgrader := websocket.Upgrader{}
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		logger.Error("WebSocket upgrade failed: %v", err)
+		return
+	}
+	defer conn.Close()
+
+	for {
+		v := latestPrice.Load()
+		if v == nil {
+			time.Sleep(1 * time.Second)
+			continue
+		}
+
+		snapshot := v.(*pb.PriceSnapshot)
+		conn.WriteJSON(map[string]interface{}{
+			"pair":  snapshot.Pair,
+			"price": snapshot.Price,
+			"time":  snapshot.Timestamp,
+		})
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func main() {
@@ -78,6 +111,7 @@ func main() {
 
 	// HTTP health check
 	http.HandleFunc("/health", healthHandler)
+	http.HandleFunc("/ws/price", streamHandler)
 	go http.ListenAndServe(":8080", nil)
 
 	select {}

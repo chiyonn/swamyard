@@ -12,5 +12,8 @@ COPY api ./api
 RUN go install github.com/air-verse/air@latest
 
 RUN go build -o pricefeed ./apps/pricefeed
-CMD ["./pricefeed"]
 
+EXPOSE 8080
+EXPOSE 50052
+
+CMD ["./pricefeed"]

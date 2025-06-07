@@ -25,8 +25,6 @@ func (b *Bot) Run() {
 			break
 		}
 
-		logger.Info("Received price: %.2f", snapshot.Price)
-
 		action := b.Strategy.Decide(snapshot.Price)
 		if action != "HOLD" {
 			go placeOrder(b.ID, b.Pair, action)

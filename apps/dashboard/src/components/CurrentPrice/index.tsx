@@ -4,14 +4,14 @@ const CurrentPrice = () => {
     const [price, setPrice] = useState<number | null>(null);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            fetch("http://localhost:8080/price") // 仮URL
-                .then(res => res.json())
-                .then(data => setPrice(data.price))
-                .catch(err => console.error("Price fetch failed", err));
-        }, 1000); // 1秒ごとに価格取得（雑にポーリング）
+        const ws = new WebSocket(`${window.location.origin.replace(/^http/, 'ws')}/ws/price`);
 
-        return () => clearInterval(interval);
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            setPrice(data.price);
+        };
+
+        return () => ws.close();
     }, []);
 
     return (
