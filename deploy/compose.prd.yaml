@@ -1,0 +1,51 @@
+services:
+  executor:
+    build:
+      context: ../backend
+      dockerfile: cmd/executor/Dockerfile.prd
+    env_file:
+      - .env.global
+      - .env.executor
+
+  pricefeed:
+    build:
+      context: ../backend
+      dockerfile: cmd/pricefeed/Dockerfile.prd
+    env_file:
+      - .env.global
+
+  aggregator:
+    build:
+      context: ../backend
+      dockerfile: cmd/aggregator/Dockerfile.prd
+    env_file:
+      - .env.global
+
+  bot-sma:
+    build:
+      context: ../backend
+      dockerfile: cmd/bot-sma/Dockerfile.prd
+    env_file:
+      - .env.global
+      - .env.bot-sma
+    depends_on:
+      - executor
+      - pricefeed
+
+  dashboard:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.prd
+    env_file:
+      - .env.global
+      - .env.dashboard
+
+  proxy:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - dashboard
+      - pricefeed

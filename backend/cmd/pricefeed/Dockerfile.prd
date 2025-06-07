@@ -1,0 +1,32 @@
+# -------------------
+# Stage 1: Build
+# -------------------
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+# 依存取得（キャッシュ効かせるため分割）
+COPY backend/go.mod backend/go.sum ./backend/
+WORKDIR /app/backend
+RUN go mod download
+
+# ソースコードコピー
+COPY backend/cmd/pricefeed ./cmd/pricefeed
+COPY backend/internal ./internal
+COPY backend/api ./api
+
+# ビルド
+RUN CGO_ENABLED=0 GOOS=linux go build -o /pricefeed ./cmd/pricefeed
+
+# -------------------
+# Stage 2: Runtime
+# -------------------
+FROM alpine:3.20
+
+# 作成されたバイナリだけ持ってくる
+COPY --from=builder /pricefeed /pricefeed
+
+# 実行
+ENTRYPOINT ["/pricefeed"]
+
+

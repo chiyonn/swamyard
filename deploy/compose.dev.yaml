@@ -1,0 +1,59 @@
+services:
+  executor:
+    build:
+      context: ../backend
+      dockerfile: cmd/executor/Dockerfile.dev
+    env_file:
+      - .env.global
+      - .env.executor
+    volumes:
+      - ../backend:/app
+    working_dir: /app/cmd/executor
+
+  pricefeed:
+    build:
+      context: ../backend
+      dockerfile: cmd/pricefeed/Dockerfile.dev
+    env_file:
+      - .env.global
+    volumes:
+      - ../backend:/app
+    working_dir: /app/cmd/pricefeed
+
+  aggregator:
+    build:
+      context: ../backend
+      dockerfile: cmd/aggregator/Dockerfile.dev
+    env_file:
+      - .env.global
+    volumes:
+      - ../backend:/app
+    working_dir: /app/cmd/aggregator
+
+  bot-sma:
+    build:
+      context: ../backend
+      dockerfile: cmd/bot-sma/Dockerfile.dev
+    env_file:
+      - .env.global
+      - .env.bot-sma
+    volumes:
+      - ../backend:/app
+    working_dir: /app/cmd/bot-sma
+    depends_on:
+      - executor
+      - pricefeed
+
+  dashboard:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.global
+      - .env.dashboard
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    working_dir: /app

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pricefeed;
+
+option go_package = "github.com/chiyonn/swarmyard/api/proto/pricefeed";
+
+service PriceFeed {
+  rpc SubscribePrices(PriceRequest) returns (stream PriceSnapshot);
+}
+
+message PriceRequest {
+  string pair = 1;
+}
+
+message PriceSnapshot {
+  string pair = 1;
+  double price = 2;
+  int64 timestamp = 3;
+}
+

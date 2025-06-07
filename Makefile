@@ -1,20 +1,23 @@
 .DEFAULT_GOAL := help
 
+ENV ?= dev
+COMPOSE := docker compose -f deploy/compose.$(ENV).yaml -p swarmyard
+
 .PHONY: build
-build: ## build
-	@docker compose -f deploy/compose.yaml -p swarmyard build
+build: ## build containers
+	@$(COMPOSE) build
 
 .PHONY: up
 up: ## start up containers
-	@docker compose -f deploy/compose.yaml -p swarmyard up
+	@$(COMPOSE) up
 
 .PHONY: build-up
 build-up: ## build and start up containers
-	@docker compose -f deploy/compose.yaml -p swarmyard up --build
+	@$(COMPOSE) up --build
 
 .PHONY: down
 down: ## stop and remove containers
-	@docker compose -f deploy/compose.yaml -p swarmyard down
+	@$(COMPOSE) down
 
 .PHONY: help
 help: ## show help

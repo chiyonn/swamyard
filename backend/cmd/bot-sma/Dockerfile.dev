@@ -1,0 +1,11 @@
+FROM golang:1.24-alpine
+
+WORKDIR /app
+
+RUN go install github.com/air-verse/air@latest
+
+COPY . /app
+
+WORKDIR /app/backend/cmd/bot-sma
+CMD ["air", "-c", ".air.toml"]
+

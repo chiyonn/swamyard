@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package tradeexecutor;
+option go_package = "github.com/chiyonn/swarmyard/api/proto/tradeexecutor";
+
+service TradeExecutor {
+  rpc PlaceOrder (OrderRequest) returns (OrderResponse);
+  rpc PauseBot (BotRequest) returns (BotResponse);
+  rpc ResumeBot (BotRequest) returns (BotResponse);
+}
+
+enum Side {
+  BUY = 0;
+  SELL = 1;
+}
+
+enum OrderStatus {
+  SUCCESS = 0;
+  FAILED = 1;
+  PENDING = 2;
+}
+
+message OrderRequest {
+  string bot_id = 1;
+  string pair = 2;
+  double amount = 3;
+  Side side = 4;
+}
+
+message OrderResponse {
+  string order_id = 1;
+  OrderStatus status = 2;
+  string message = 3; // optional: error or confirmation details
+}
+
+message BotRequest {
+  string bot_id = 1;
+}
+
+message BotResponse {
+  string status = 1;
+  string message = 2; // optional
+}
