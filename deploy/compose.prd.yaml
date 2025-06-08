@@ -3,6 +3,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/executor/Dockerfile.prd
+    expose:
+      - "8080"
     env_file:
       - .env.global
       - .env.executor
@@ -11,6 +13,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/pricefeed/Dockerfile.prd
+    expose:
+      - "8080"
     env_file:
       - .env.global
 
@@ -18,6 +22,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/aggregator/Dockerfile.prd
+    expose:
+      - "8080"
     env_file:
       - .env.global
 
@@ -25,6 +31,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/bot-sma/Dockerfile.prd
+    expose:
+      - "8080"
     env_file:
       - .env.global
       - .env.bot-sma
@@ -36,6 +44,8 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile.prd
+    ports:
+      - "5173:5173"
     env_file:
       - .env.global
       - .env.dashboard

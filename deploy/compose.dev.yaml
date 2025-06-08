@@ -3,6 +3,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/executor/Dockerfile.dev
+    expose:
+      - "8080"
     env_file:
       - .env.global
       - .env.executor
@@ -14,6 +16,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/pricefeed/Dockerfile.dev
+    expose:
+      - "8080"
     env_file:
       - .env.global
     volumes:
@@ -24,6 +28,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/aggregator/Dockerfile.dev
+    expose:
+      - "8080"
     env_file:
       - .env.global
     volumes:
@@ -34,6 +40,8 @@ services:
     build:
       context: ../backend
       dockerfile: cmd/bot-sma/Dockerfile.dev
+    expose:
+      - "8080"
     env_file:
       - .env.global
       - .env.bot-sma
