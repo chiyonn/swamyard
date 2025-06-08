@@ -26,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PriceFeedClient interface {
-	SubscribePrices(ctx context.Context, in *PriceRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PriceSnapshot], error)
+	SubscribePrices(ctx context.Context, in *PriceRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PriceSnapshotList], error)
 }
 
 type priceFeedClient struct {
@@ -37,13 +37,13 @@ func NewPriceFeedClient(cc grpc.ClientConnInterface) PriceFeedClient {
 	return &priceFeedClient{cc}
 }
 
-func (c *priceFeedClient) SubscribePrices(ctx context.Context, in *PriceRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PriceSnapshot], error) {
+func (c *priceFeedClient) SubscribePrices(ctx context.Context, in *PriceRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PriceSnapshotList], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &PriceFeed_ServiceDesc.Streams[0], PriceFeed_SubscribePrices_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[PriceRequest, PriceSnapshot]{ClientStream: stream}
+	x := &grpc.GenericClientStream[PriceRequest, PriceSnapshotList]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -54,13 +54,13 @@ func (c *priceFeedClient) SubscribePrices(ctx context.Context, in *PriceRequest,
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type PriceFeed_SubscribePricesClient = grpc.ServerStreamingClient[PriceSnapshot]
+type PriceFeed_SubscribePricesClient = grpc.ServerStreamingClient[PriceSnapshotList]
 
 // PriceFeedServer is the server API for PriceFeed service.
 // All implementations must embed UnimplementedPriceFeedServer
 // for forward compatibility.
 type PriceFeedServer interface {
-	SubscribePrices(*PriceRequest, grpc.ServerStreamingServer[PriceSnapshot]) error
+	SubscribePrices(*PriceRequest, grpc.ServerStreamingServer[PriceSnapshotList]) error
 	mustEmbedUnimplementedPriceFeedServer()
 }
 
@@ -71,7 +71,7 @@ type PriceFeedServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPriceFeedServer struct{}
 
-func (UnimplementedPriceFeedServer) SubscribePrices(*PriceRequest, grpc.ServerStreamingServer[PriceSnapshot]) error {
+func (UnimplementedPriceFeedServer) SubscribePrices(*PriceRequest, grpc.ServerStreamingServer[PriceSnapshotList]) error {
 	return status.Errorf(codes.Unimplemented, "method SubscribePrices not implemented")
 }
 func (UnimplementedPriceFeedServer) mustEmbedUnimplementedPriceFeedServer() {}
@@ -100,11 +100,11 @@ func _PriceFeed_SubscribePrices_Handler(srv interface{}, stream grpc.ServerStrea
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(PriceFeedServer).SubscribePrices(m, &grpc.GenericServerStream[PriceRequest, PriceSnapshot]{ServerStream: stream})
+	return srv.(PriceFeedServer).SubscribePrices(m, &grpc.GenericServerStream[PriceRequest, PriceSnapshotList]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type PriceFeed_SubscribePricesServer = grpc.ServerStreamingServer[PriceSnapshot]
+type PriceFeed_SubscribePricesServer = grpc.ServerStreamingServer[PriceSnapshotList]
 
 // PriceFeed_ServiceDesc is the grpc.ServiceDesc for PriceFeed service.
 // It's only intended for direct use with grpc.RegisterService,

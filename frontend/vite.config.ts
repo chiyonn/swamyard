@@ -20,7 +20,7 @@ export default defineConfig({
         port: 5173,
         allowedHosts,
         proxy: {
-            '/ws': {
+            '/ws/price': {
                 target: 'ws://pricefeed:8080',
                 ws: true,
                 changeOrigin: true,

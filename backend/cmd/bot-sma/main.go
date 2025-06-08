@@ -30,12 +30,11 @@ func startPriceStream() {
 	defer conn.Close()
 
 	client := pricefeedpb.NewPriceFeedClient(conn)
-	stream, err := client.SubscribePrices(context.Background(), &pricefeedpb.PriceRequest{Pair: "BTC/USDT"})
+	stream, err := client.SubscribePrices(context.Background(), &pricefeedpb.PriceRequest{Base: "JPY"})
 	if err != nil {
 		logger.Error("Failed to subscribe: %v", err)
 		return
 	}
-
 
 	for {
 		snapshot, err := stream.Recv()
@@ -44,12 +43,14 @@ func startPriceStream() {
 			break
 		}
 
-		if snapshot.Price <= 140.20 && lastAction != "BUY" {
-			placeOrder(pb.Side_BUY, "USD/JPY", 1000.0)
-			lastAction = "BUY"
-		} else if snapshot.Price >= 140.80 && lastAction != "SELL" {
-			placeOrder(pb.Side_SELL, "USD/JPY", 1000.0)
-			lastAction = "SELL"
+		for _, rate := range snapshot.Rates {
+			if rate.Price <= 140.20 && lastAction != "BUY" {
+				placeOrder(pb.Side_BUY, rate.Pair, 1000.0)
+				lastAction = "BUY"
+			} else if rate.Price >= 140.80 && lastAction != "SELL" {
+				placeOrder(pb.Side_SELL, rate.Pair, 1000.0)
+				lastAction = "SELL"
+			}
 		}
 	}
 }
@@ -100,8 +101,8 @@ func main() {
 
 	sma := &strategy.SMAStrategy{}
 	bot := &botcore.Bot{
-		ID: "bot-sma",
-		Pair: "USD/JPY",
+		ID:       "bot-sma",
+		Pair:     "USD/JPY",
 		Strategy: sma,
 	}
 	go bot.Run()

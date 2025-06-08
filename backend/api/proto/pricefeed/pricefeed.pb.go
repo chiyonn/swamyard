@@ -23,7 +23,7 @@ const (
 
 type PriceRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Pair          string                 `protobuf:"bytes,1,opt,name=pair,proto3" json:"pair,omitempty"`
+	Base          string                 `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,11 +58,71 @@ func (*PriceRequest) Descriptor() ([]byte, []int) {
 	return file_api_proto_pricefeed_pricefeed_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PriceRequest) GetPair() string {
+func (x *PriceRequest) GetBase() string {
 	if x != nil {
-		return x.Pair
+		return x.Base
 	}
 	return ""
+}
+
+type PriceSnapshotList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Base          string                 `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
+	Rates         []*PriceSnapshot       `protobuf:"bytes,2,rep,name=rates,proto3" json:"rates,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PriceSnapshotList) Reset() {
+	*x = PriceSnapshotList{}
+	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PriceSnapshotList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriceSnapshotList) ProtoMessage() {}
+
+func (x *PriceSnapshotList) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriceSnapshotList.ProtoReflect.Descriptor instead.
+func (*PriceSnapshotList) Descriptor() ([]byte, []int) {
+	return file_api_proto_pricefeed_pricefeed_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *PriceSnapshotList) GetBase() string {
+	if x != nil {
+		return x.Base
+	}
+	return ""
+}
+
+func (x *PriceSnapshotList) GetRates() []*PriceSnapshot {
+	if x != nil {
+		return x.Rates
+	}
+	return nil
+}
+
+func (x *PriceSnapshotList) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
 }
 
 type PriceSnapshot struct {
@@ -76,7 +136,7 @@ type PriceSnapshot struct {
 
 func (x *PriceSnapshot) Reset() {
 	*x = PriceSnapshot{}
-	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[1]
+	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +148,7 @@ func (x *PriceSnapshot) String() string {
 func (*PriceSnapshot) ProtoMessage() {}
 
 func (x *PriceSnapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[1]
+	mi := &file_api_proto_pricefeed_pricefeed_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +161,7 @@ func (x *PriceSnapshot) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriceSnapshot.ProtoReflect.Descriptor instead.
 func (*PriceSnapshot) Descriptor() ([]byte, []int) {
-	return file_api_proto_pricefeed_pricefeed_proto_rawDescGZIP(), []int{1}
+	return file_api_proto_pricefeed_pricefeed_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *PriceSnapshot) GetPair() string {
@@ -131,13 +191,17 @@ const file_api_proto_pricefeed_pricefeed_proto_rawDesc = "" +
 	"\n" +
 	"#api/proto/pricefeed/pricefeed.proto\x12\tpricefeed\"\"\n" +
 	"\fPriceRequest\x12\x12\n" +
-	"\x04pair\x18\x01 \x01(\tR\x04pair\"W\n" +
+	"\x04base\x18\x01 \x01(\tR\x04base\"u\n" +
+	"\x11PriceSnapshotList\x12\x12\n" +
+	"\x04base\x18\x01 \x01(\tR\x04base\x12.\n" +
+	"\x05rates\x18\x02 \x03(\v2\x18.pricefeed.PriceSnapshotR\x05rates\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"W\n" +
 	"\rPriceSnapshot\x12\x12\n" +
 	"\x04pair\x18\x01 \x01(\tR\x04pair\x12\x14\n" +
 	"\x05price\x18\x02 \x01(\x01R\x05price\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp2S\n" +
-	"\tPriceFeed\x12F\n" +
-	"\x0fSubscribePrices\x12\x17.pricefeed.PriceRequest\x1a\x18.pricefeed.PriceSnapshot0\x01B2Z0github.com/chiyonn/swarmyard/api/proto/pricefeedb\x06proto3"
+	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp2W\n" +
+	"\tPriceFeed\x12J\n" +
+	"\x0fSubscribePrices\x12\x17.pricefeed.PriceRequest\x1a\x1c.pricefeed.PriceSnapshotList0\x01B2Z0github.com/chiyonn/swarmyard/api/proto/pricefeedb\x06proto3"
 
 var (
 	file_api_proto_pricefeed_pricefeed_proto_rawDescOnce sync.Once
@@ -151,19 +215,21 @@ func file_api_proto_pricefeed_pricefeed_proto_rawDescGZIP() []byte {
 	return file_api_proto_pricefeed_pricefeed_proto_rawDescData
 }
 
-var file_api_proto_pricefeed_pricefeed_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_proto_pricefeed_pricefeed_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_proto_pricefeed_pricefeed_proto_goTypes = []any{
-	(*PriceRequest)(nil),  // 0: pricefeed.PriceRequest
-	(*PriceSnapshot)(nil), // 1: pricefeed.PriceSnapshot
+	(*PriceRequest)(nil),      // 0: pricefeed.PriceRequest
+	(*PriceSnapshotList)(nil), // 1: pricefeed.PriceSnapshotList
+	(*PriceSnapshot)(nil),     // 2: pricefeed.PriceSnapshot
 }
 var file_api_proto_pricefeed_pricefeed_proto_depIdxs = []int32{
-	0, // 0: pricefeed.PriceFeed.SubscribePrices:input_type -> pricefeed.PriceRequest
-	1, // 1: pricefeed.PriceFeed.SubscribePrices:output_type -> pricefeed.PriceSnapshot
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: pricefeed.PriceSnapshotList.rates:type_name -> pricefeed.PriceSnapshot
+	0, // 1: pricefeed.PriceFeed.SubscribePrices:input_type -> pricefeed.PriceRequest
+	1, // 2: pricefeed.PriceFeed.SubscribePrices:output_type -> pricefeed.PriceSnapshotList
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_pricefeed_pricefeed_proto_init() }
@@ -177,7 +243,7 @@ func file_api_proto_pricefeed_pricefeed_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_pricefeed_pricefeed_proto_rawDesc), len(file_api_proto_pricefeed_pricefeed_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
