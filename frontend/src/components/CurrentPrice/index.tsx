@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 
+type Rate = {
+    tag: string;
+    amount: number;
+};
+
 const CurrentPrice = () => {
-    const [price, setPrice] = useState<number | null>(null);
-    const [pair, setPair] = useState<string>('');
+    const [rates, setRates] = useState<Rate[]>([]);
 
     useEffect(() => {
         const wsUrl = `${window.location.origin.replace(/^http/, 'ws')}/ws/price`;
@@ -17,23 +21,14 @@ const CurrentPrice = () => {
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                console.log('[WebSocket] Parsed:', data);
 
-                // たとえば: { rates: [ { pair: "USD/JPY", amount: 140.42, timestamp: 123456789 } ] }
-                if (Array.isArray(data.rates) && data.rates.length > 0) {
-                    const latest = data.rates[0];
-
-                    if (typeof latest.amount === 'number') {
-                        setPrice(latest.amount);
-                    } else {
-                        console.warn('[WebSocket] Missing or invalid amount:', latest);
-                    }
-
-                    if (typeof latest.pair === 'string') {
-                        setPair(latest.pair);
-                    }
+                if (Array.isArray(data.rates)) {
+                    const validRates = data.rates.filter(
+                        (r: any) => typeof r.tag === 'string' && typeof r.amount === 'number'
+                    );
+                    setRates(validRates);
                 } else {
-                    console.warn('[WebSocket] No rates found in data:', data);
+                    console.warn('[WebSocket] No rates array:', data);
                 }
             } catch (err) {
                 console.error('[WebSocket] JSON parse error:', err);
@@ -44,19 +39,26 @@ const CurrentPrice = () => {
             console.warn('[WebSocket] CLOSED', e);
         };
 
-        ws.onerror = (err) => {
-            console.error('[WebSocket] ERROR:', err);
-        };
-
         return () => {
-            console.log('[WebSocket] CLEANUP, closing socket');
+            console.log('[WebSocket] CLEANUP');
             ws.close();
         };
     }, []);
 
     return (
-        <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>
-            {price !== null ? `${pair || 'Price'}: ${price.toFixed(6)}` : 'Loading...'}
+        <div style={{ padding: '1rem' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Exchange Rates (Base: JPY)</h2>
+            {rates.length > 0 ? (
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                    {rates.map((rate) => (
+                        <li key={rate.tag} style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>
+                            {rate.tag}: {rate.amount.toFixed(6)}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <div>Loading exchange rates...</div>
+            )}
         </div>
     );
 };
